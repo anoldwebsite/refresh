@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>PCR/Refresh Cases From Poland/Germany</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    h1, h2 {
+      text-align: center;
+    }
+    
+    main {
+      margin: 20px;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+    
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    
+    tr:hover {
+      background-color: #ddd;
+    }
+  </style>
+  <script src="https://cdn.rawgit.com/Keyang/node-csvtojson/d41f44aa/browser/csvtojson.min.js"></script>
+</head>
+
+<body>
+  <h1>PCR / Refresh</h1>
+  <h2>Hemmersbach Warehouse Malmö</h2>
+  <main>
+    
+  </main>
+  <script>
+    const url = "https://docs.google.com/spreadsheets/d/1BhESPsCZcAoH3QsztBco9-qCFkuRBNI2rcxRmgyD4SM/export?format=csv"
+    const main = document.querySelector("main");
+    fetch(url)
+      .then(resutl => resutl.text())
+      .then(function(csvtext){
+        // csvtext => main.innerHTML=csvtext
+        return csv().fromString(csvtext);
+      })
+      .then(function(csv){
+        //main.innerHTML="<code>" + JSON.stringify(csv) + "</code>";
+        let tbl = document.createElement('table');
+        tbl.border = 1;
+        let hrow = document.createElement('tr');
+        let th1 = document.createElement('th');
+        let th2 = document.createElement('th');
+        let th3 = document.createElement('th');
+        th1.innerHTML = "Request Item";
+        th2.innerHTML = "Action";
+        th3.innerHTML = "Date";
+        hrow.appendChild(th1);
+        hrow.appendChild(th2);
+        hrow.appendChild(th3);
+        tbl.appendChild(hrow);
+        //Make the other rows fromt each row in Google Sheet.
+        csv.forEach(function(row){
+          let data_row = document.createElement('tr');
+          let row_cell1 = document.createElement('td');
+          let row_cell2 = document.createElement('td');
+          let row_cell3 = document.createElement('td');
+          row_cell1.innerHTML = row.Request_ID;
+          row_cell2.innerHTML = row.Action_Type;
+          row_cell3.innerHTML = row.Check_in_Date;
+          data_row.appendChild(row_cell1);
+          data_row.appendChild(row_cell2);
+          data_row.appendChild(row_cell3);
+          tbl.appendChild(data_row);
+        })
+        main.appendChild(tbl)
+      });
+  </script>
+
+</body>
+
+</html>
